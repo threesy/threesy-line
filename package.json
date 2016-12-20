@@ -15,5 +15,22 @@
   "bugs": {
     "url": "https://github.com/threesy/threesy-line/issues"
   },
-  "homepage": "https://github.com/threesy/threesy-line#readme"
+  "homepage": "https://github.com/threesy/threesy-line#readme",
+  "dependencies": {
+    "babelify": "^7.3.0",
+    "d3-array": "^1.0.2",
+    "d3-axis": "^1.0.4",
+    "d3-scale": "^1.0.4",
+    "d3-selection": "^1.0.3",
+    "d3-shape": "^1.0.4",
+    "uuid": "^3.0.1"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.1.1",
+    "babelify": "^7.3.0",
+    "browserify": "^13.1.1",
+    "gulp": "^3.9.1",
+    "gulp-sass": "^3.0.0",
+    "mkdirp": "^0.5.1"
+  }
 }

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Threesy Line Chart</title>
+    <script src="../dist/threesy-line.js"></script>
+    <link rel="stylesheet" href="../dist/threesy-line.css">
+</head>
+<body>
+<div id="chart"></div>
+<script>
+    var data = [
+        {x: "Sunday", y: 2},
+        {x: "Monday", y: 3},
+        {x: "Tuesday", y: 1},
+        {x: "Wednesday", y: 6},
+        {x: "Thursday", y: 4},
+        {x: "Friday", y: 7},
+        {x: "Saturday", y: 1}
+    ];
+
+    var linechart = new ThreesyLine({
+        element: "#chart",
+        classes: ["threesy-line-chart", "line-chart"],
+        data: data
+    });
+
+    linechart.draw();
+</script>
+</body>
+</html>
