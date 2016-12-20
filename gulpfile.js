@@ -2,27 +2,45 @@ const fs = require("fs");
 const gulp = require("gulp");
 const sass = require("gulp-sass");
 const mkdirp = require("mkdirp");
+const rollup = require("rollup");
+const babel = require("rollup-plugin-babel");
 const uglify = require("gulp-uglify");
-const source = require("vinyl-source-stream");
-const buffer = require("vinyl-buffer");
-const browserify = require("browserify");
+const rename = require("gulp-rename");
+const nodeResolve = require("rollup-plugin-node-resolve");
 
-mkdirp("dist");
+mkdirp("build");
 
 gulp.task("compile:js", () => {
-    return browserify("src/js/threesy-line.js", {debug: true, standalone: "ThreesyLine"})
-        .transform("babelify")
-        .bundle()
-        .pipe(source("threesy-line.js"))
-        .pipe(buffer())
-        .pipe(uglify())
-        .pipe(gulp.dest('dist'));
+    return rollup
+        .rollup({
+            entry: "src/js/threesy-line.js",
+            plugins: [
+                babel(),
+                nodeResolve({jsnext: true, main: true})
+            ]
+        })
+        .then((bundle) => {
+            return bundle
+                .write({
+                    format: "iife",
+                    exports: "default",
+                    moduleName: "ThreesyLine",
+                    indent: true,
+                    dest: "build/threesy-line.js"
+                })
+                .then(() => {
+                    return gulp.src("build/threesy-line.js")
+                        .pipe(uglify())
+                        .pipe(rename({suffix: ".min"}))
+                        .pipe(gulp.dest("build"));
+                });
+        });
 });
 
 gulp.task("compile:sass", () => {
     return gulp.src("src/sass/**/*.scss")
         .pipe(sass())
-        .pipe(gulp.dest('dist'));
+        .pipe(gulp.dest('build'));
 });
 
 gulp.task("default", ["compile:js", "compile:sass"]);

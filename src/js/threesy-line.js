@@ -25,7 +25,7 @@ const uuid = () => {
 // in an object with the "default" property. So, instantiation would require
 // "new ThreesyLine.default()" instead of just "new ThreesyLine()".
 // Using "module.exports", however, seems to be the workaround for this.
-module.exports = class ThreesyLine {
+export default class ThreesyLine {
     constructor(opts = {}) {
         // Wrapper HTML element for the chart.
         if (opts.element) {
@@ -207,4 +207,4 @@ module.exports = class ThreesyLine {
 
         return this;
     }
-};
+}
