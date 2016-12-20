@@ -4,14 +4,22 @@ import {scaleLinear, scalePoint} from "d3-scale";
 import {extent} from "d3-array";
 import * as axis from "d3-axis";
 
-import * as uuid from "uuid/v4";
-
 const defaultMargin = {top: 10, right: 20, bottom: 30, left: 30};
 const defaultHeight = 200;
 const defaultWidth = 400;
 
 const defaultXAccessor = "x";
 const defaultYAccessor = "y";
+
+/*
+ * http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+ */
+const uuid = () => {
+    'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+};
 
 // If the "export default" syntax is used, then Browserify will wrap this class
 // in an object with the "default" property. So, instantiation would require
@@ -25,7 +33,7 @@ module.exports = class ThreesyLine {
         }
 
         // Element id and CSS classes.
-        this._id = opts.id || uuid.default();
+        this._id = opts.id || uuid();
         this._classes = opts.classes || [];
 
         // Chart data.
