@@ -68,7 +68,14 @@ opts.**width**
 
 opts.**margin**
 
-`object` Sets the margins of the chart
+`object` Sets the margins of the chart. The margin property must have
+the properties `top`, `right`, `bottom`, and `left`. Example:
+
+```json
+{
+  "margin": {"top": 10, "right": 20, "bottom": 30, "left": 30}
+}
+```
  
 opts.**data**
  
