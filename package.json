@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "The threesy-line module is used to create single or multi-series line charts.",
   "main": "index.js",
+  "jsnext:main": "js/threesy-line.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -32,7 +33,6 @@
     "mkdirp": "^0.5.1",
     "rollup": "^0.37.0",
     "rollup-plugin-babel": "^2.7.1",
-    "rollup-plugin-node-resolve": "^2.0.0",
-    "rollup-plugin-uglify": "^1.0.1"
+    "rollup-plugin-node-resolve": "^2.0.0"
   }
 }

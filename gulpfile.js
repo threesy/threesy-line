@@ -11,36 +11,33 @@ const nodeResolve = require("rollup-plugin-node-resolve");
 mkdirp("build");
 
 gulp.task("compile:js", () => {
-    return rollup
-        .rollup({
-            entry: "src/js/threesy-line.js",
-            plugins: [
-                babel(),
-                nodeResolve({jsnext: true, main: true})
-            ]
-        })
-        .then((bundle) => {
-            return bundle
-                .write({
-                    format: "iife",
-                    exports: "default",
-                    moduleName: "ThreesyLine",
-                    indent: true,
-                    dest: "build/threesy-line.js"
-                })
-                .then(() => {
-                    return gulp.src("build/threesy-line.js")
-                        .pipe(uglify())
-                        .pipe(rename({suffix: ".min"}))
-                        .pipe(gulp.dest("build"));
-                });
-        });
+  let rollupOpts = {
+    entry: "js/threesy-line.js",
+    plugins: [babel(), nodeResolve({jsnext: true, main: true})]
+  };
+
+  let writeOpts = {
+    format: "iife",
+    exports: "default",
+    moduleName: "ThreesyLine",
+    indent: true,
+    dest: "build/threesy-line.js"
+  };
+
+  rollup.rollup(rollupOpts).then((bundle) => {
+    bundle.write(writeOpts).then(() => {
+      gulp.src("build/threesy-line.js")
+          .pipe(uglify())
+          .pipe(rename({suffix: ".min"}))
+          .pipe(gulp.dest("build"));
+    });
+  });
 });
 
 gulp.task("compile:sass", () => {
-    return gulp.src("src/sass/**/*.scss")
-        .pipe(sass())
-        .pipe(gulp.dest('build'));
+  return gulp.src("sass/**/*.scss")
+      .pipe(sass())
+      .pipe(gulp.dest('build'));
 });
 
 gulp.task("default", ["compile:js", "compile:sass"]);
