@@ -3,34 +3,71 @@
 This Threesy module can be used to create simple line charts that
 _don't_ use time-series data.
 
-## Use
-Load it directly from Github to a browser:
+## Get Started
+
+First, load the threesy-line script and the very basic CSS 
+directly from Github.
+
 ```html
 <script src="https://raw.githubusercontent.com/threesy/threesy-line/master/build/threesy-line.js"></script>
+<link rel="stylesheet" href="https://raw.githubusercontent.com/threesy/threesy-line/master/build/threesy-line.css"> 
 ```
 
-## Quick Start
+You do not need to include any other dependencies to start using
+the threesy-line component and to create a simple line chart.
+
 ```js
-var lineChart = new ThreesyLine({
-    element: "#chart",
-    classes: ["threesy-line-chart", "line-chart"],
-    data: data 
+// Create a new instance of a ThreesyLine chart.
+var linechart = new ThreesyLine({
+    element: "#chart-container",
+    height: 200,
+    width: 400,
+    data: [
+        {x: "Mon", y: 1},
+        {x: "Tue", y: 3},
+        {x: "Wed", y: 5}
+    ]
 });
+
+// Draw the chart on the screen.
+// Nothing will happen until draw() is invoked.
+linechart.draw();
 ```
 
-## API
+## Reference
 
-### ThreesyLine(opts)
+### ThreesyLine([opts])
 
-Options:
+The ThreesyLine instance can be created by passing in an object
+to the constructor or without any arguments. You can always set
+the instance properties after it's been create.
+
+opts.**element**
+
+`string` The id of the HTML element that will wrap the chart.
+
+opts.**id**
+
+`string` Value for the chart id. If not provided, one will be
+ generated automatically. Although, it's helpful to specify your
+ own so you can use to track charts when there several.
+ 
+opts.**classes**
+ 
+`array` The array of CSS class names that you want to add to your
+ chart. This should be used if you're planning on using your own styles
+ for the charts.
+ 
+opts.**data**
+ 
+`array` This is usually an array of objects. For example:
 ```js
-{
-    element: "#line-chart-container" // The wrapper element for the chart
-                                     // container. Required.
-    
-    id: "chart-id"                   // Specify your own id for the chart.
-                                     // An id will be auto-generated if not
-                                     // provided. Optional.
-}
+[
+    {"x": "Mon", "y": 1},
+    {"x": "Tue", "y": 2},
+    ...
+]
 ```
 
+If you use properties other than `"x"` and `"y"`, then you must set
+the accessor properties - `accessorX` and `accessorY`.
