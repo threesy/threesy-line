@@ -46,9 +46,9 @@ var ThreesyLine = (function () {
     };
 
     if (typeof document !== "undefined") {
-      var element$1 = document.documentElement;
-      if (!element$1.matches) {
-        var vendorMatches = element$1.webkitMatchesSelector || element$1.msMatchesSelector || element$1.mozMatchesSelector || element$1.oMatchesSelector;
+      var element = document.documentElement;
+      if (!element.matches) {
+        var vendorMatches = element.webkitMatchesSelector || element.msMatchesSelector || element.mozMatchesSelector || element.oMatchesSelector;
         matcher = function matcher(selector) {
           return function () {
             return vendorMatches.call(this, selector);
@@ -64,8 +64,8 @@ var ThreesyLine = (function () {
     var event = null;
 
     if (typeof document !== "undefined") {
-      var element$2 = document.documentElement;
-      if (!("onmouseenter" in element$2)) {
+      var element$1 = document.documentElement;
+      if (!("onmouseenter" in element$1)) {
         filterEvents = { mouseenter: "mouseover", mouseleave: "mouseout" };
       }
     }
@@ -4903,17 +4903,12 @@ var ThreesyLine = (function () {
      * http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
      */
     var uuid = function uuid() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
             var r = Math.random() * 16 | 0,
-                v = c === 'x' ? r : r & 0x3 | 0x8;
+                v = c === "x" ? r : r & 0x3 | 0x8;
             return v.toString(16);
         });
     };
-
-    // If the "export default" syntax is used, then Browserify will wrap this class
-    // in an object with the "default" property. So, instantiation would require
-    // "new ThreesyLine.default()" instead of just "new ThreesyLine()".
-    // Using "module.exports", however, seems to be the workaround for this.
 
     var ThreesyLine = function () {
         function ThreesyLine() {
@@ -4922,179 +4917,76 @@ var ThreesyLine = (function () {
 
             // Wrapper HTML element for the chart.
             if (opts.element) {
-                this._element = select(opts.element);
+                this.element = select(opts.element);
             }
 
             // Element id and CSS classes.
-            this._id = opts.id || uuid();
-            this._classes = opts.classes || [];
+            this.id = opts.id || uuid();
+            this.classes = opts.classes || [];
 
             // Chart data.
-            this._data = opts.data || [];
+            this.data = opts.data || [];
 
             // Chart dimensions and margins/padding.
-            this._margin = opts.margin || defaultMargin;
-            this._height = (opts.height || defaultHeight) - this._margin.top - this._margin.bottom;
-            this._width = (opts.width || defaultWidth) - this._margin.left - this._margin.right;
+            this.margin = opts.margin || defaultMargin;
+            this.height = (opts.height || defaultHeight) - this.margin.top - this.margin.bottom;
+            this.width = (opts.width || defaultWidth) - this.margin.left - this.margin.right;
 
-            this._accessorX = opts.accessorX || defaultXAccessor;
-            this._accessorY = opts.accessorY || defaultYAccessor;
+            this.accessorX = opts.accessorX || defaultXAccessor;
+            this.accessorY = opts.accessorY || defaultYAccessor;
 
-            this._domainX = opts.domainX;
-            this._domainY = opts.domainY;
+            this.domainX = opts.domainX;
+            this.domainY = opts.domainY;
         }
 
         createClass(ThreesyLine, [{
-            key: "id",
-            value: function id(_) {
-                if (arguments.length) {
-                    this._id = _;
-                } else {
-                    return this._id;
-                }
-            }
-        }, {
-            key: "classes",
-            value: function classes(_) {
-                if (arguments.length) {
-                    this._classes = _;
-                } else {
-                    return this._classes;
-                }
-            }
-        }, {
-            key: "height",
-            value: function height(_) {
-                if (arguments.length) {
-                    this._height = _;
-                } else {
-                    return this._height;
-                }
-            }
-        }, {
-            key: "width",
-            value: function width(_) {
-                if (arguments.length) {
-                    this._width = _;
-                } else {
-                    return this._width;
-                }
-            }
-        }, {
-            key: "data",
-            value: function data(_) {
-                if (arguments.length) {
-                    this._data = _;
-                } else {
-                    return this.data;
-                }
-            }
-        }, {
-            key: "accessorX",
-            value: function accessorX(_) {
-                if (arguments.length) {
-                    this._accessorX = _;
-                } else {
-                    return this._accessorX;
-                }
-            }
-        }, {
-            key: "accessorY",
-            value: function accessorY(_) {
-                if (arguments.length) {
-                    this._accessorY = _;
-                } else {
-                    return this._accessorY;
-                }
-            }
-        }, {
-            key: "domainX",
-            value: function domainX(_) {
-                if (arguments.length) {
-                    this._domainX = _;
-                } else {
-                    return this._domainX;
-                }
-            }
-        }, {
-            key: "domainY",
-            value: function domainY(_) {
-                if (arguments.length) {
-                    this._domainY = _;
-                } else {
-                    return this._domainY;
-                }
-            }
-        }, {
-            key: "element",
-            value: function element(_) {
-                if (arguments.length) {
-                    this._element = _;
-                } else {
-                    return this._element;
-                }
-            }
-        }, {
-            key: "chart",
-            value: function chart(_) {
-                if (arguments.length) {
-                    this._chart = _;
-                } else {
-                    return this._chart;
-                }
-            }
-        }, {
             key: "draw",
             value: function draw() {
                 var _this = this;
 
-                if (typeof this._element === "undefined") {
+                if (typeof this.element === "undefined") {
                     throw new Error("No element selected.");
                 }
 
-                if (typeof this._data === "undefined" || !this._data.length) {
+                if (typeof this.data === "undefined" || !this.data.length) {
                     throw new Error("No chart data provided.");
                 }
 
-                if (typeof this._domainX === "undefined") {
-                    var domain = this._data.map(function (d) {
-                        return typeof _this._accessorX === "string" ? d[_this._accessorX] : _this._accessorX(d);
+                if (typeof this.domainX === "undefined") {
+                    this.domainX = this.data.map(function (d) {
+                        return typeof _this.accessorX === "string" ? d[_this.accessorX] : _this.accessorX(d);
                     });
-
-                    this.domainX(domain);
                 }
 
-                if (typeof this._domainY === "undefined") {
-                    var _domain = extent(this._data, function (d) {
-                        return typeof _this._accessorY === "string" ? d[_this._accessorY] : _this._accessorY(d);
+                if (typeof this.domainY === "undefined") {
+                    this.domainY = extent(this.data, function (d) {
+                        return typeof _this.accessorY === "string" ? d[_this.accessorY] : _this.accessorY(d);
                     });
-
-                    this.domainY(_domain);
                 }
 
-                this._scaleX = point$2().domain(this._domainX).range([0, this._width]);
+                this.scaleX = point$2().domain(this.domainX).range([0, this.width]);
 
-                this._scaleY = linear().domain(this._domainY).range([this._height, 0]);
+                this.scaleY = linear().domain(this.domainY).range([this.height, 0]);
 
-                this._axisX = axisBottom(this._scaleX);
+                this.axisX = axisBottom(this.scaleX);
 
-                this._axisY = axisLeft(this._scaleY).ticks(this._data.length);
+                this.axisY = axisLeft(this.scaleY).ticks(this.data.length);
 
-                this._chart = this._element.append("svg").attr("id", this._id).attr("class", this._classes.join(" ")).attr("height", this._height + this._margin.top + this._margin.bottom).attr("width", this._width + this._margin.left + this._margin.right).append("g").attr("transform", "translate(" + this._margin.left + ", " + this._margin.top + ")");
+                this.chart = this.element.append("svg").attr("id", this.id).attr("class", this.classes.join(" ")).attr("height", this.height + this.margin.top + this.margin.bottom).attr("width", this.width + this.margin.left + this.margin.right).append("g").attr("transform", "translate(" + this.margin.left + ", " + this.margin.top + ")");
 
-                this._chart.classed("threesy-line", true);
+                this.chart.classed("threesy-line", true);
 
-                this._chart.append("g").attr("class", "x axis").attr("transform", "translate(0, " + this._height + ")").call(this._axisX);
+                this.chart.append("g").attr("class", "x axis").attr("transform", "translate(0, " + this.height + ")").call(this.axisX);
 
-                this._chart.append("g").attr("class", "y axis").call(this._axisY);
+                this.chart.append("g").attr("class", "y axis").call(this.axisY);
 
-                this._line = line().x(function (d) {
-                    return _this._scaleX(typeof _this._accessorX === "string" ? d[_this._accessorX] : _this._accessorX(d));
+                this.line = line().x(function (d) {
+                    return _this.scaleX(typeof _this.accessorX === "string" ? d[_this.accessorX] : _this.accessorX(d));
                 }).y(function (d) {
-                    return _this._scaleY(typeof _this._accessorY === "string" ? d[_this._accessorY] : _this._accessorY(d));
+                    return _this.scaleY(typeof _this.accessorY === "string" ? d[_this.accessorY] : _this.accessorY(d));
                 });
 
-                this._path = this._chart.append("g").append("path").datum(this._data).attr("class", "line").attr("d", this._line);
+                this.path = this.chart.append("g").append("path").datum(this.data).attr("class", "line").attr("d", this.line);
 
                 return this;
             }
