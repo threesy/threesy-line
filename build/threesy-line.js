@@ -4924,6 +4924,11 @@ var ThreesyLine = (function () {
             this.id = opts.id || uuid();
             this.classes = opts.classes || [];
 
+            // Chart dimensions and margins/padding.
+            this.margin = opts.margin || defaultMargin;
+            this.height = (opts.height || defaultHeight) - this.margin.top - this.margin.bottom;
+            this.width = (opts.width || defaultWidth) - this.margin.left - this.margin.right;
+
             // Chart data.
             this.data = opts.data || [];
 
@@ -4932,11 +4937,6 @@ var ThreesyLine = (function () {
 
             this.domainX = opts.domainX;
             this.domainY = opts.domainY;
-
-            // Chart dimensions and margins/padding.
-            this.margin = opts.margin || defaultMargin;
-            this.height = (opts.height || defaultHeight) - this.margin.top - this.margin.bottom;
-            this.width = (opts.width || defaultWidth) - this.margin.left - this.margin.right;
         }
 
         createClass(ThreesyLine, [{
@@ -4989,6 +4989,33 @@ var ThreesyLine = (function () {
                 this.path = this.chart.append("g").append("path").datum(this.data).attr("class", "line").attr("d", this.line);
 
                 return this;
+            }
+        }, {
+            key: "update",
+            value: function update(data) {
+                var _this2 = this;
+
+                if (typeof data === "undefined" || !data.length) {
+                    throw new Error("Can't invoke update without data.");
+                }
+
+                this.data = data;
+
+                this.domainX = this.data.map(function (d) {
+                    return typeof _this2.accessorX === "string" ? d[_this2.accessorX] : _this2.accessorX(d);
+                });
+
+                this.domainY = extent(this.data, function (d) {
+                    return typeof _this2.accessorY === "string" ? d[_this2.accessorY] : _this2.accessorY(d);
+                });
+
+                this.scaleX.domain(this.domainX);
+                this.scaleY.domain(this.domainY);
+
+                select(".x.axis").call(this.axisX);
+                select(".y.axis").call(this.axisY);
+
+                this.path.datum(this.data).attr("d", this.line);
             }
         }]);
         return ThreesyLine;

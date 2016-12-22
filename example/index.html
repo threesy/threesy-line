@@ -28,6 +28,20 @@
     });
 
     linechart.draw();
+
+    data = [
+      {x: "Sunday", y: 3},
+      {x: "Monday", y: 3},
+      {x: "Tuesday", y: 5},
+      {x: "Wednesday", y: 7},
+      {x: "Thursday", y: 3},
+      {x: "Friday", y: 0},
+      {x: "Saturday", y: 12}
+    ];
+
+    setTimeout(() => {
+      linechart.update(data, true);
+    }, 2000);
 </script>
 </body>
 </html>

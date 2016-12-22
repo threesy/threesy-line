@@ -111,4 +111,27 @@ export default class ThreesyLine {
 
     return this;
   }
+
+  update(data) {
+    if (typeof data === "undefined" || !data.length) {
+      throw new Error("Can't invoke update without data.")
+    }
+
+    this.data = data;
+
+    this.domainX = this.data.map((d) =>
+        typeof this.accessorX === "string" ? d[this.accessorX] : this.accessorX(d));
+
+    this.domainY = extent(this.data, (d) =>
+        typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d));
+
+    this.scaleX.domain(this.domainX);
+    this.scaleY.domain(this.domainY);
+
+    select(".x.axis").call(this.axisX);
+    select(".y.axis").call(this.axisY);
+
+    this.path.datum(this.data)
+        .attr("d", this.line);
+  }
 }
