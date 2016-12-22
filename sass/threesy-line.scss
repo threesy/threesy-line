@@ -1,7 +1,15 @@
 .threesy-line {
+  $default_line_color: #0288D1;
+
   path.line {
     fill: none;
-    stroke: #0288D1;
+    stroke: $default_line_color;
     stroke-width: 1px;
+  }
+
+  .threesy-data-point {
+    fill: #FFF;
+    stroke: $default_line_color;
+    stroke-width: 2;
   }
 }

@@ -2,3 +2,8 @@
   fill: none;
   stroke: #0288D1;
   stroke-width: 1px; }
+
+.threesy-line .threesy-data-point {
+  fill: #FFF;
+  stroke: #0288D1;
+  stroke-width: 2; }
