@@ -3,6 +3,8 @@
 This Threesy module can be used to create simple line charts that
 _don't_ use time-series data.
 
+[View example](https://threesy.github.io/threesy-line/example/) 
+
 ## Get Started
 
 First, load the threesy-line script and the very basic CSS 
