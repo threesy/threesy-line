@@ -145,6 +145,9 @@ export default class ThreesyLine {
         .data(this.data)
         .enter().append("circle")
         .attr("class", "threesy-data-point")
+        .attr("data-tooltip", (d) =>
+            `${typeof this.accessorX === "string" ? d[this.accessorX] : this.accessorX(d)}: ${typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)}`)
+        .attr("data-tooltip-position", "top center")
         .attr("r", 3.5)
         .attr("cx", (d) => this.scaleX(typeof this.accessorX === "string" ? d[this.accessorX] : this.accessorX(d)))
         .attr("cy", (d) => this.scaleY(typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)))

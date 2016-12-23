@@ -118,3 +118,15 @@ represent data points. Default is `true`.
 
 `boolean` Use false if you don't want the chart to show the guide lines
 that go across the length and width of the chart. Default is `true`.
+
+## Tooltips
+
+ThreesyLine supports the use of [Tether Tooltip](http://github.hubspot.com/tooltip/).
+To use this feature include the tooltip dependencies.
+
+```html
+<link rel="stylesheet" href="css/tooltip-theme-arrows.css" />
+<script src="tether.min.js"></script>
+<script src="drop.min.js"></script>
+<script src="tooltip.min.js"></script>
+```

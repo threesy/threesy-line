@@ -12,6 +12,10 @@
     fill: #FFF;
     stroke: $default_line_color;
     stroke-width: 2;
+
+    &:hover {
+      stroke-width: 4;
+    }
   }
 
   .threesy-grid-line {

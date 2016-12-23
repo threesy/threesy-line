@@ -5016,7 +5016,9 @@ var ThreesyLine = (function () {
 
                 // Create circles for each data point.
                 // Only visible if showDataPoints = true.
-                this.dataPoints = this.chart.selectAll(".threesy-data-point").data(this.data).enter().append("circle").attr("class", "threesy-data-point").attr("r", 3.5).attr("cx", function (d) {
+                this.dataPoints = this.chart.selectAll(".threesy-data-point").data(this.data).enter().append("circle").attr("class", "threesy-data-point").attr("data-tooltip", function (d) {
+                    return (typeof _this.accessorX === "string" ? d[_this.accessorX] : _this.accessorX(d)) + ": " + (typeof _this.accessorY === "string" ? d[_this.accessorY] : _this.accessorY(d));
+                }).attr("data-tooltip-position", "top center").attr("r", 3.5).attr("cx", function (d) {
                     return _this.scaleX(typeof _this.accessorX === "string" ? d[_this.accessorX] : _this.accessorX(d));
                 }).attr("cy", function (d) {
                     return _this.scaleY(typeof _this.accessorY === "string" ? d[_this.accessorY] : _this.accessorY(d));
