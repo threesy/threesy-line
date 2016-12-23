@@ -4938,7 +4938,8 @@ var ThreesyLine = (function () {
             this.domainX = opts.domainX;
             this.domainY = opts.domainY;
 
-            this.showDataPoints = true;
+            this.showDataPoints = typeof opts.showDataPoints === "undefined" ? true : opts.showDataPoints;
+            this.showGridLines = typeof opts.showGridLines === "undefined" ? true : opts.showGridLines;
         }
 
         createClass(ThreesyLine, [{
@@ -4981,6 +4982,22 @@ var ThreesyLine = (function () {
 
                 this.chart.classed("threesy-line", true);
 
+                this.gridLineX = this.chart.selectAll(".threesy-grid-line-x").data(this.data.filter(function (d, i) {
+                    return i > 0;
+                })).enter().append("line").attr("class", "threesy-grid-line threesy-grid-line-x").attr("x1", function (d) {
+                    return _this.scaleX(typeof _this.accessorX === "string" ? d[_this.accessorX] : _this.accessorX(d));
+                }).attr("x2", function (d) {
+                    return _this.scaleX(typeof _this.accessorX === "string" ? d[_this.accessorX] : _this.accessorX(d));
+                }).attr("y1", 0).attr("y2", this.height);
+
+                this.gridLineY = this.chart.selectAll(".threesy-grid-line-y").data(this.data.filter(function (d) {
+                    return _this.scaleY(typeof _this.accessorY === "string" ? d[_this.accessorY] : _this.accessorY(d)) < _this.height - 1;
+                })).enter().append("line").attr("class", "threesy-grid-line threesy-grid-line-y").attr("x1", 0).attr("x1", this.width).attr("y1", function (d) {
+                    return _this.scaleY(typeof _this.accessorY === "string" ? d[_this.accessorY] : _this.accessorY(d));
+                }).attr("y2", function (d) {
+                    return _this.scaleY(typeof _this.accessorY === "string" ? d[_this.accessorY] : _this.accessorY(d));
+                });
+
                 // Draw the x and y axes
                 this.chart.append("g").attr("class", "x axis").attr("transform", "translate(0, " + this.height + ")").call(this.axisX);
 
@@ -4997,11 +5014,13 @@ var ThreesyLine = (function () {
                 // Draw the path
                 this.path = this.chart.append("g").append("path").datum(this.data).attr("class", "line").attr("d", this.line);
 
+                // Create circles for each data point.
+                // Only visible if showDataPoints = true.
                 this.dataPoints = this.chart.selectAll(".threesy-data-point").data(this.data).enter().append("circle").attr("class", "threesy-data-point").attr("r", 3.5).attr("cx", function (d) {
                     return _this.scaleX(typeof _this.accessorX === "string" ? d[_this.accessorX] : _this.accessorX(d));
                 }).attr("cy", function (d) {
                     return _this.scaleY(typeof _this.accessorY === "string" ? d[_this.accessorY] : _this.accessorY(d));
-                });
+                }).style("visibility", this.showDataPoints ? "visible" : "hidden");
 
                 return this;
             }
@@ -5027,6 +5046,25 @@ var ThreesyLine = (function () {
                 this.scaleX.domain(this.domainX);
                 this.scaleY.domain(this.domainY);
 
+                this.gridLineX.data(this.data.filter(function (d, i) {
+                    return i > 0;
+                })).attr("x1", function (d) {
+                    return _this2.scaleX(typeof _this2.accessorX === "string" ? d[_this2.accessorX] : _this2.accessorX(d));
+                }).attr("x2", function (d) {
+                    return _this2.scaleX(typeof _this2.accessorX === "string" ? d[_this2.accessorX] : _this2.accessorX(d));
+                }).attr("y1", 0).attr("y2", this.height);
+
+                this.gridLineY.data(this.data.filter(function (d) {
+                    return _this2.scaleY(typeof _this2.accessorY === "string" ? d[_this2.accessorY] : _this2.accessorY(d)) < _this2.height - 1;
+                })).attr("x1", 0).attr("x1", this.width).attr("y1", function (d) {
+                    return _this2.scaleY(typeof _this2.accessorY === "string" ? d[_this2.accessorY] : _this2.accessorY(d));
+                }).attr("y2", function (d) {
+                    return _this2.scaleY(typeof _this2.accessorY === "string" ? d[_this2.accessorY] : _this2.accessorY(d));
+                });
+
+                this.gridLineX.exit().remove();
+                this.gridLineY.exit().remove();
+
                 select(".x.axis").call(this.axisX);
                 select(".y.axis").call(this.axisY);
 
@@ -5037,6 +5075,18 @@ var ThreesyLine = (function () {
                 }).attr("cy", function (d) {
                     return _this2.scaleY(typeof _this2.accessorY === "string" ? d[_this2.accessorY] : _this2.accessorY(d));
                 });
+
+                this.dataPoints.exit().remove();
+            }
+        }, {
+            key: "toggleDataPoints",
+            value: function toggleDataPoints() {
+                this.dataPoints.style("visibility", (this.showDataPoints = !this.showDataPoints) ? "visible" : "hidden");
+            }
+        }, {
+            key: "toggleGridLines",
+            value: function toggleGridLines() {
+                this.chart.selectAll(".threesy-grid-line").style("visibility", (this.showGridLines = !this.showGridLines) ? "visible" : "hidden");
             }
         }]);
         return ThreesyLine;

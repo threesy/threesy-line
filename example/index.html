@@ -14,7 +14,7 @@
 
     button {
         height: 30px;
-        width: 80px;
+        width: auto;
         border-radius: 2px;
         background-color: #fff;
         border: 1px solid #CCC;
@@ -36,7 +36,11 @@
 </style>
 <div class="container">
     <div id="chart"></div>
+</div>
+<div class="container">
     <button type="button" id="update-btn">UPDATE</button>
+    <button type="button" id="toggle-data-points">TOGGLE DATA POINTS</button>
+    <button type="button" id="toggle-grid-lines">TOGGLE GRID LINES</button>
 </div>
 <script>
   var data = [
@@ -60,10 +64,19 @@
   linechart.draw();
 
   var updateBtn = document.getElementById("update-btn");
+  var togglePointsBtn = document.getElementById("toggle-data-points");
+  var toggleGridLines = document.getElementById("toggle-grid-lines");
 
   updateBtn.onclick = () => {
     data.forEach((d) => d.y = Math.random());
-
     linechart.update(data, true);
+  };
+
+  togglePointsBtn.onclick = () => {
+    linechart.toggleDataPoints();
+  };
+
+  toggleGridLines.onclick = () => {
+    linechart.toggleGridLines();
   };
 </script>

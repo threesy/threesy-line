@@ -7,3 +7,8 @@
   fill: #FFF;
   stroke: #0288D1;
   stroke-width: 2; }
+
+.threesy-line .threesy-grid-line {
+  stroke: #E0E0E0;
+  stroke-width: 1px;
+  stroke-dasharray: 5, 5; }

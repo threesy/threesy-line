@@ -46,7 +46,8 @@ export default class ThreesyLine {
     this.domainX = opts.domainX;
     this.domainY = opts.domainY;
 
-    this.showDataPoints = true;
+    this.showDataPoints = typeof opts.showDataPoints === "undefined" ? true : opts.showDataPoints;
+    this.showGridLines = typeof opts.showGridLines === "undefined" ? true : opts.showGridLines;
   }
 
   draw() {
@@ -95,6 +96,26 @@ export default class ThreesyLine {
     this.chart
         .classed("threesy-line", true);
 
+    this.gridLineX = this.chart.selectAll(".threesy-grid-line-x")
+        .data(this.data.filter((d, i) => i > 0))
+        .enter().append("line")
+        .attr("class", "threesy-grid-line threesy-grid-line-x")
+        .attr("x1", (d) => this.scaleX(typeof this.accessorX === "string" ? d[this.accessorX] : this.accessorX(d)))
+        .attr("x2", (d) => this.scaleX(typeof this.accessorX === "string" ? d[this.accessorX] : this.accessorX(d)))
+        .attr("y1", 0)
+        .attr("y2", this.height);
+
+    this.gridLineY = this.chart.selectAll(".threesy-grid-line-y")
+        .data(this.data.filter((d) => {
+          return this.scaleY(typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)) < this.height - 1;
+        }))
+        .enter().append("line")
+        .attr("class", "threesy-grid-line threesy-grid-line-y")
+        .attr("x1", 0)
+        .attr("x1", this.width)
+        .attr("y1", (d) => this.scaleY(typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)))
+        .attr("y2", (d) => this.scaleY(typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)));
+
     // Draw the x and y axes
     this.chart.append("g")
         .attr("class", "x axis")
@@ -118,14 +139,16 @@ export default class ThreesyLine {
         .attr("class", "line")
         .attr("d", this.line);
 
-    this.dataPoints = this.chart
-        .selectAll(".threesy-data-point")
+    // Create circles for each data point.
+    // Only visible if showDataPoints = true.
+    this.dataPoints = this.chart.selectAll(".threesy-data-point")
         .data(this.data)
         .enter().append("circle")
         .attr("class", "threesy-data-point")
         .attr("r", 3.5)
         .attr("cx", (d) => this.scaleX(typeof this.accessorX === "string" ? d[this.accessorX] : this.accessorX(d)))
-        .attr("cy", (d) => this.scaleY(typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)));
+        .attr("cy", (d) => this.scaleY(typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)))
+        .style("visibility", this.showDataPoints ? "visible" : "hidden");
 
     return this;
   }
@@ -146,6 +169,25 @@ export default class ThreesyLine {
     this.scaleX.domain(this.domainX);
     this.scaleY.domain(this.domainY);
 
+    this.gridLineX
+        .data(this.data.filter((d, i) => i > 0))
+        .attr("x1", (d) => this.scaleX(typeof this.accessorX === "string" ? d[this.accessorX] : this.accessorX(d)))
+        .attr("x2", (d) => this.scaleX(typeof this.accessorX === "string" ? d[this.accessorX] : this.accessorX(d)))
+        .attr("y1", 0)
+        .attr("y2", this.height);
+
+    this.gridLineY
+        .data(this.data.filter((d) => {
+          return this.scaleY(typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)) < this.height - 1;
+        }))
+        .attr("x1", 0)
+        .attr("x1", this.width)
+        .attr("y1", (d) => this.scaleY(typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)))
+        .attr("y2", (d) => this.scaleY(typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)));
+
+    this.gridLineX.exit().remove();
+    this.gridLineY.exit().remove();
+
     select(".x.axis").call(this.axisX);
     select(".y.axis").call(this.axisY);
 
@@ -155,5 +197,17 @@ export default class ThreesyLine {
     this.dataPoints.data(this.data)
         .attr("cx", (d) => this.scaleX(typeof this.accessorX === "string" ? d[this.accessorX] : this.accessorX(d)))
         .attr("cy", (d) => this.scaleY(typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)));
+
+    this.dataPoints.exit().remove();
+  }
+
+  toggleDataPoints() {
+    this.dataPoints
+        .style("visibility", (this.showDataPoints = !this.showDataPoints) ? "visible" : "hidden");
+  }
+
+  toggleGridLines() {
+    this.chart.selectAll(".threesy-grid-line")
+        .style("visibility", (this.showGridLines = !this.showGridLines) ? "visible" : "hidden");
   }
 }

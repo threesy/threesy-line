@@ -1,5 +1,6 @@
 .threesy-line {
   $default_line_color: #0288D1;
+  $default_grid_line_color: #E0E0E0;
 
   path.line {
     fill: none;
@@ -11,5 +12,11 @@
     fill: #FFF;
     stroke: $default_line_color;
     stroke-width: 2;
+  }
+
+  .threesy-grid-line {
+    stroke: $default_grid_line_color;
+    stroke-width: 1px;
+    stroke-dasharray: 5, 5;
   }
 }

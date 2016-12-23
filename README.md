@@ -34,39 +34,37 @@ var linechart = new ThreesyLine({
 linechart.draw();
 ```
 
-## Reference
-
-### ThreesyLine([opts])
+## ThreesyLine([opts])
 
 The ThreesyLine instance can be created by passing in an object
 to the constructor or without any arguments. You can always set
 the instance properties after it's been create.
 
-opts.**element**
+### opts.element
 
 `string` The id of the HTML element that will wrap the chart.
 
-opts.**id**
+### opts.id
 
 `string` Value for the chart id. If not provided, one will be
  generated automatically. Although, it's helpful to specify your
  own so you can use to track charts when there several.
  
-opts.**classes**
+### opts.classes
  
 `array` The array of CSS class names that you want to add to your
  chart. This should be used if you're planning on using your own styles
  for the charts.
  
-opts.**height**
+### opts.height
 
 `number` Sets the height of the chart.
 
-opts.**width**
+### opts.width
 
 `number` Sets the width of the chart.
 
-opts.**margin**
+### opts.margin
 
 `object` Sets the margins of the chart. The margin property must have
 the properties `top`, `right`, `bottom`, and `left`. Example:
@@ -77,7 +75,7 @@ the properties `top`, `right`, `bottom`, and `left`. Example:
 }
 ```
  
-opts.**data**
+### opts.data
  
 `array` This is usually an array of objects. For example:
 ```js
@@ -95,7 +93,7 @@ opts.**accessorX**
 `function` | `string` Use this property to set the accessor function
 or string value for the x values in the data.
 
-opts.**accessorY**
+### opts.accessorY
 
 `function` | `string` Use this property to set the accessor function
 or string valuer for the y values in the data.
@@ -103,10 +101,20 @@ or string valuer for the y values in the data.
 Use the accessor properties if the entries fields in data are other
 than `"x"` and `"y"`.
 
-opts.**domainX**
+### opts.domainX
 
 Use this property to explicitly set the domain of the x scale.
 
-opts.**domainY**
+### opts.domainY
 
 Use this property to explicity set the domain of the y scale.
+
+### opts.showDataPoints
+
+`boolean` Use `false` if you don't what the chart to draw circles that
+represent data points. Default is `true`.
+
+### opts.showGridLines
+
+`boolean` Use false if you don't want the chart to show the guide lines
+that go across the length and width of the chart. Default is `true`.
