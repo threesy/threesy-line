@@ -1,0 +1,31 @@
+{
+  "name": "threesy-line",
+  "description": "The threesy-line module is used to create single or multi-series line charts.",
+  "main": "index.js",
+  "authors": [
+    "Tejen Shrestha"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "threesy",
+    "threesy-line",
+    "line-chart",
+    "d3"
+  ],
+  "dependencies": {
+    "d3-array": "^1.0.2",
+    "d3-axis": "^1.0.4",
+    "d3-scale": "^1.0.4",
+    "d3-selection": "^1.0.3",
+    "d3-shape": "^1.0.4",
+    "tether-tooltip": "^1.2.0"
+  },
+  "homepage": "https://github.com/threesy/threesy-line",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

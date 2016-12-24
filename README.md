@@ -15,6 +15,11 @@ directly from Github.
 <link rel="stylesheet" href="https://raw.githubusercontent.com/threesy/threesy-line/master/build/threesy-line.css"> 
 ```
 
+Or, install using Bower
+```
+bower install --save threesy-line
+```
+
 You do not need to include any other dependencies to start using
 the threesy-line component and to create a simple line chart.
 
