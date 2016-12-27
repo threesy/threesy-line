@@ -8,11 +8,11 @@ const uglify = require("gulp-uglify");
 const rename = require("gulp-rename");
 const nodeResolve = require("rollup-plugin-node-resolve");
 
-mkdirp("build");
+mkdirp("dist");
 
 gulp.task("compile:js", () => {
   let rollupOpts = {
-    entry: "js/threesy-line.js",
+    entry: "src/js/threesy-line.js",
     plugins: [babel(), nodeResolve({jsnext: true, main: true})]
   };
 
@@ -21,23 +21,23 @@ gulp.task("compile:js", () => {
     exports: "default",
     moduleName: "ThreesyLine",
     indent: true,
-    dest: "build/threesy-line.js"
+    dest: "dist/threesy-line.js"
   };
 
   rollup.rollup(rollupOpts).then((bundle) => {
     bundle.write(writeOpts).then(() => {
-      gulp.src("build/threesy-line.js")
+      gulp.src("dist/threesy-line.js")
           .pipe(uglify())
           .pipe(rename({suffix: ".min"}))
-          .pipe(gulp.dest("build"));
+          .pipe(gulp.dest("dist"));
     });
   });
 });
 
 gulp.task("compile:sass", () => {
-  return gulp.src("sass/**/*.scss")
+  return gulp.src("src/sass/**/*.scss")
       .pipe(sass())
-      .pipe(gulp.dest('build'));
+      .pipe(gulp.dest('dist'));
 });
 
 gulp.task("default", ["compile:js", "compile:sass"]);

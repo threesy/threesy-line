@@ -1,1 +1,1 @@
-export {default as ThreesyLine} from "./js/threesy-line";
+export {default as ThreesyLine} from "./src/js/threesy-line";
