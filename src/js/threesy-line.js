@@ -33,6 +33,10 @@ const getValue = (accessor, data) => {
 
 export default class ThreesyLine {
 
+  static getValue(accessor, data) {
+    return getValue(accessor, data);
+  }
+
   constructor(opts = {}) {
     // Wrapper HTML element for the chart.
     if (opts.element) {
@@ -152,8 +156,6 @@ export default class ThreesyLine {
         .data(this.data)
         .enter().append("circle")
         .attr("class", "threesy-data-point")
-        .attr("data-tooltip", (d) => `${getValue(this.accessorX, d)}: ${getValue(this.accessorY, d)}`)
-        .attr("data-tooltip-position", "top center")
         .attr("r", 3.5)
         .attr("cx", (d) => this.scaleX(getValue(this.accessorX, d)))
         .attr("cy", (d) => this.scaleY(getValue(this.accessorY, d)))
