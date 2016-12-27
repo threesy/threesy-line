@@ -3,7 +3,7 @@
 This Threesy module is used to create simple line charts that
 _don't_ use time-series data. Like other Threesy modules (coming soon),
 ThreesyLine uses D3 v4 so that it can take advantage of its modularity
-and only use the modules that are required to make ThreesLine work. This
+and only use the modules that are required to make ThreesyLine work. This
 helps keep file size to a minimum. That said, do not use this module if you require
 the full functionality of D3.
 
