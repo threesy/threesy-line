@@ -145,8 +145,9 @@ Include Tether dependencies:
 <script src="tooltip.min.js"></script>
 ```
 
-Programmatically enable the tooltip. It is _important_ to invoke the
-chart instance's `draw()` before enabling the tooltip.
+Programmatically enable the tooltip. The `<circle>` data-points elements
+need to be visible first, so it is _important_ to invoke the chart instance's
+`draw()` before enabling the tooltip.
 ```js
 var chart = new ThreesyLine({...});
 
