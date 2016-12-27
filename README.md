@@ -11,8 +11,8 @@ First, load the threesy-line script and the very basic CSS
 directly from Github.
 
 ```html
-<script src="https://raw.githubusercontent.com/threesy/threesy-line/master/build/threesy-line.js"></script>
-<link rel="stylesheet" href="https://raw.githubusercontent.com/threesy/threesy-line/master/build/threesy-line.css"> 
+<script src="https://raw.githubusercontent.com/threesy/threesy-line/master/dist/threesy-line.js"></script>
+<link rel="stylesheet" href="https://raw.githubusercontent.com/threesy/threesy-line/master/dist/threesy-line.css"> 
 ```
 
 Or, install using Bower
