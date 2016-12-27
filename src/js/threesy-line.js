@@ -21,15 +21,14 @@ const undefinedType = "undefined";
  * http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
  */
 const uuid = () => {
-  return uuidTemplate.replace(/[xy]/g, function(c) {
+  return uuidTemplate.replace(/[xy]/g, c => {
     let r = Math.random() * 16 | 0, v = c === uuidReplaceStr ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
 };
 
-const getValue = (accessor, data) => {
-  return typeof accessor === stringType ? data[accessor] : accessor(data);
-};
+const getValue = (accessor, data) =>
+    typeof accessor === stringType ? data[accessor] : accessor(data);
 
 export default class ThreesyLine {
 
@@ -75,11 +74,11 @@ export default class ThreesyLine {
     }
 
     if (typeof this.domainX === undefinedType) {
-      this.domainX = this.data.map((d) => getValue(this.accessorX, d));
+      this.domainX = this.data.map(d => getValue(this.accessorX, d));
     }
 
     if (typeof this.domainY === undefinedType) {
-      this.domainY = extent(this.data, (d) => getValue(this.accessorY, d));
+      this.domainY = extent(this.data, d => getValue(this.accessorY, d));
     }
 
     // Create the x and y scales, and set the
@@ -113,19 +112,19 @@ export default class ThreesyLine {
         .data(this.data.filter((d, i) => i > 0))
         .enter().append("line")
         .attr("class", "threesy-grid-line threesy-grid-line-x")
-        .attr("x1", (d) => this.scaleX(getValue(this.accessorX, d)))
-        .attr("x2", (d) => this.scaleX(getValue(this.accessorX, d)))
+        .attr("x1", d => this.scaleX(getValue(this.accessorX, d)))
+        .attr("x2", d => this.scaleX(getValue(this.accessorX, d)))
         .attr("y1", 0)
         .attr("y2", this.height);
 
     this.gridLineY = this.chart.selectAll(".threesy-grid-line-y")
-        .data(this.data.filter((d) => this.scaleY(getValue(this.accessorY, d)) < this.height - 1))
+        .data(this.data.filter(d => this.scaleY(getValue(this.accessorY, d)) < this.height - 1))
         .enter().append("line")
         .attr("class", "threesy-grid-line threesy-grid-line-y")
         .attr("x1", 0)
         .attr("x1", this.width)
-        .attr("y1", (d) => this.scaleY(getValue(this.accessorY, d)))
-        .attr("y2", (d) => this.scaleY(getValue(this.accessorY, d)));
+        .attr("y1", d => this.scaleY(getValue(this.accessorY, d)))
+        .attr("y2", d => this.scaleY(getValue(this.accessorY, d)));
 
     // Draw the x and y axes
     this.axisLineX = this.chart.append("g")
@@ -140,8 +139,8 @@ export default class ThreesyLine {
     // Create the line generator and set the
     // access functions
     this.line = line()
-        .x((d) => this.scaleX(getValue(this.accessorX, d)))
-        .y((d) => this.scaleY(getValue(this.accessorY, d)));
+        .x(d => this.scaleX(getValue(this.accessorX, d)))
+        .y(d => this.scaleY(getValue(this.accessorY, d)));
 
     // Draw the path
     this.path = this.chart.append("g")
@@ -157,8 +156,8 @@ export default class ThreesyLine {
         .enter().append("circle")
         .attr("class", "threesy-data-point")
         .attr("r", 3.5)
-        .attr("cx", (d) => this.scaleX(getValue(this.accessorX, d)))
-        .attr("cy", (d) => this.scaleY(getValue(this.accessorY, d)))
+        .attr("cx", d => this.scaleX(getValue(this.accessorX, d)))
+        .attr("cy", d => this.scaleY(getValue(this.accessorY, d)))
         .style("visibility", this.showDataPoints ? "visible" : "hidden");
 
     return this;
@@ -170,25 +169,25 @@ export default class ThreesyLine {
     }
 
     this.data = data;
-    this.domainX = this.data.map((d) => getValue(this.accessorX, d));
-    this.domainY = extent(this.data, (d) => getValue(this.accessorY, d));
+    this.domainX = this.data.map(d => getValue(this.accessorX, d));
+    this.domainY = extent(this.data, d => getValue(this.accessorY, d));
 
     this.scaleX.domain(this.domainX);
     this.scaleY.domain(this.domainY);
 
     this.gridLineX
         .data(this.data.filter((d, i) => i > 0))
-        .attr("x1", (d) => this.scaleX(getValue(this.accessorX, d)))
-        .attr("x2", (d) => this.scaleX(getValue(this.accessorX, d)))
+        .attr("x1", d => this.scaleX(getValue(this.accessorX, d)))
+        .attr("x2", d => this.scaleX(getValue(this.accessorX, d)))
         .attr("y1", 0)
         .attr("y2", this.height);
 
     this.gridLineY
-        .data(this.data.filter((d) => this.scaleY(getValue(this.accessorY, d)) < this.height - 1))
+        .data(this.data.filter(d => this.scaleY(getValue(this.accessorY, d)) < this.height - 1))
         .attr("x1", 0)
         .attr("x1", this.width)
-        .attr("y1", (d) => this.scaleY(getValue(this.accessorY, d)))
-        .attr("y2", (d) => this.scaleY(getValue(this.accessorY, d)));
+        .attr("y1", d => this.scaleY(getValue(this.accessorY, d)))
+        .attr("y2", d => this.scaleY(getValue(this.accessorY, d)));
 
     this.gridLineX.exit().remove();
     this.gridLineY.exit().remove();
@@ -200,8 +199,8 @@ export default class ThreesyLine {
         .attr("d", this.line);
 
     this.dataPoints.data(this.data)
-        .attr("cx", (d) => this.scaleX(getValue(this.accessorX, d)))
-        .attr("cy", (d) => this.scaleY(getValue(this.accessorY, d)));
+        .attr("cx", d => this.scaleX(getValue(this.accessorX, d)))
+        .attr("cy", d => this.scaleY(getValue(this.accessorY, d)));
 
     this.dataPoints.exit().remove();
   }
