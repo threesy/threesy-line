@@ -28,7 +28,7 @@
         background-color: #fff;
         border: 1px solid #CCC;
     }
-    
+
     button:hover {
         background-color: #EEEEEE;
         cursor: pointer;
@@ -77,12 +77,13 @@
 
   var getValue = ThreesyLine.getValue;
 
+  var tooltip;
+
   chart.draw();
 
   // Enable tooltips using Tether tooltip.
   chart.dataPoints
-      .attr("data-tooltip", (d) =>
-          `${getValue(chart.accessorX, d)}: ${getValue(chart.accessorY, d).toFixed(3)}`)
+      .attr("data-tooltip", (d) => `${getValue(chart.accessorX, d)}: ${getValue(chart.accessorY, d).toFixed(3)}`)
       .attr("data-tooltip-position", "top center");
 
   var updateBtn = document.getElementById("update-btn");

@@ -133,11 +133,36 @@ that go across the length and width of the chart. Default is `true`.
 ## Tooltips
 
 ThreesyLine supports the use of [Tether Tooltip](http://github.hubspot.com/tooltip/).
-To use this feature include the tooltip dependencies.
+To use this feature, first, include the tooltip dependencies. The tooltip
+is bound to the datapoint `<circle>` elements of the chart, so it needs 
+to be visible. FYI, the default behavior is to show the data-points.
 
+Include Tether dependencies:
 ```html
 <link rel="stylesheet" href="css/tooltip-theme-arrows.css" />
 <script src="tether.min.js"></script>
 <script src="drop.min.js"></script>
 <script src="tooltip.min.js"></script>
 ```
+
+Programmatically enable the tooltip. It is _important_ to invoke the
+chart instance's `draw()` before enabling the tooltip.
+```js
+var chart = new ThreesyLine({...});
+
+// IMPORTANT!
+// Must call draw before enabling the tooltip.
+chart.draw();
+
+// The "data-tooltip" and "data-tooltip-position" attributes
+// belong to Tether tooltip.
+chart.dataPoints
+  .attr("data-tooltip", function(d) {
+    // E.g. "Monday: 32.4"
+    return d.x + ": " + d.y;
+  })
+  .attr("data-tooltip-position", "top center");
+```
+
+You can learn more about using the Tether tooltip by reading their
+[documentation](http://github.hubspot.com/tooltip/).
