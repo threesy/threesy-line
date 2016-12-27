@@ -7,7 +7,7 @@ _don't_ use time-series data.
 
 ## Get Started
 
-First, load the threesy-line script and the very basic CSS 
+Load the threesy-line script and the very basic CSS
 directly from Github.
 
 ```html

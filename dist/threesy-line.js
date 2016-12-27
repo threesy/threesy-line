@@ -4899,15 +4899,25 @@ var ThreesyLine = (function () {
     var defaultXAccessor = "x";
     var defaultYAccessor = "y";
 
+    var uuidTemplate = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
+    var uuidReplaceStr = "x";
+
+    var stringType = "string";
+    var undefinedType = "undefined";
+
     /*
      * http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
      */
     var uuid = function uuid() {
-        return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+        return uuidTemplate.replace(/[xy]/g, function (c) {
             var r = Math.random() * 16 | 0,
-                v = c === "x" ? r : r & 0x3 | 0x8;
+                v = c === uuidReplaceStr ? r : r & 0x3 | 0x8;
             return v.toString(16);
         });
+    };
+
+    var getValue = function getValue(accessor, data) {
+        return (typeof accessor === "undefined" ? "undefined" : _typeof(accessor)) === stringType ? data[accessor] : accessor(data);
     };
 
     var ThreesyLine = function () {
@@ -4938,8 +4948,8 @@ var ThreesyLine = (function () {
             this.domainX = opts.domainX;
             this.domainY = opts.domainY;
 
-            this.showDataPoints = typeof opts.showDataPoints === "undefined" ? true : opts.showDataPoints;
-            this.showGridLines = typeof opts.showGridLines === "undefined" ? true : opts.showGridLines;
+            this.showDataPoints = _typeof(opts.showDataPoints) === undefinedType ? true : opts.showDataPoints;
+            this.showGridLines = _typeof(opts.showGridLines) === undefinedType ? true : opts.showGridLines;
         }
 
         createClass(ThreesyLine, [{
@@ -4947,23 +4957,23 @@ var ThreesyLine = (function () {
             value: function draw() {
                 var _this = this;
 
-                if (typeof this.element === "undefined") {
+                if (_typeof(this.element) === undefinedType) {
                     throw new Error("No element selected.");
                 }
 
-                if (typeof this.data === "undefined" || !this.data.length) {
+                if (_typeof(this.data) === undefinedType || !this.data.length) {
                     throw new Error("No chart data provided.");
                 }
 
-                if (typeof this.domainX === "undefined") {
+                if (_typeof(this.domainX) === undefinedType) {
                     this.domainX = this.data.map(function (d) {
-                        return typeof _this.accessorX === "string" ? d[_this.accessorX] : _this.accessorX(d);
+                        return getValue(_this.accessorX, d);
                     });
                 }
 
-                if (typeof this.domainY === "undefined") {
+                if (_typeof(this.domainY) === undefinedType) {
                     this.domainY = extent(this.data, function (d) {
-                        return typeof _this.accessorY === "string" ? d[_this.accessorY] : _this.accessorY(d);
+                        return getValue(_this.accessorY, d);
                     });
                 }
 
@@ -4985,30 +4995,30 @@ var ThreesyLine = (function () {
                 this.gridLineX = this.chart.selectAll(".threesy-grid-line-x").data(this.data.filter(function (d, i) {
                     return i > 0;
                 })).enter().append("line").attr("class", "threesy-grid-line threesy-grid-line-x").attr("x1", function (d) {
-                    return _this.scaleX(typeof _this.accessorX === "string" ? d[_this.accessorX] : _this.accessorX(d));
+                    return _this.scaleX(getValue(_this.accessorX, d));
                 }).attr("x2", function (d) {
-                    return _this.scaleX(typeof _this.accessorX === "string" ? d[_this.accessorX] : _this.accessorX(d));
+                    return _this.scaleX(getValue(_this.accessorX, d));
                 }).attr("y1", 0).attr("y2", this.height);
 
                 this.gridLineY = this.chart.selectAll(".threesy-grid-line-y").data(this.data.filter(function (d) {
-                    return _this.scaleY(typeof _this.accessorY === "string" ? d[_this.accessorY] : _this.accessorY(d)) < _this.height - 1;
+                    return _this.scaleY(getValue(_this.accessorY, d)) < _this.height - 1;
                 })).enter().append("line").attr("class", "threesy-grid-line threesy-grid-line-y").attr("x1", 0).attr("x1", this.width).attr("y1", function (d) {
-                    return _this.scaleY(typeof _this.accessorY === "string" ? d[_this.accessorY] : _this.accessorY(d));
+                    return _this.scaleY(getValue(_this.accessorY, d));
                 }).attr("y2", function (d) {
-                    return _this.scaleY(typeof _this.accessorY === "string" ? d[_this.accessorY] : _this.accessorY(d));
+                    return _this.scaleY(getValue(_this.accessorY, d));
                 });
 
                 // Draw the x and y axes
-                this.chart.append("g").attr("class", "x axis").attr("transform", "translate(0, " + this.height + ")").call(this.axisX);
+                this.axisLineX = this.chart.append("g").attr("class", "x axis").attr("transform", "translate(0, " + this.height + ")").call(this.axisX);
 
-                this.chart.append("g").attr("class", "y axis").call(this.axisY);
+                this.axisLineY = this.chart.append("g").attr("class", "y axis").call(this.axisY);
 
                 // Create the line generator and set the
                 // access functions
                 this.line = line().x(function (d) {
-                    return _this.scaleX(typeof _this.accessorX === "string" ? d[_this.accessorX] : _this.accessorX(d));
+                    return _this.scaleX(getValue(_this.accessorX, d));
                 }).y(function (d) {
-                    return _this.scaleY(typeof _this.accessorY === "string" ? d[_this.accessorY] : _this.accessorY(d));
+                    return _this.scaleY(getValue(_this.accessorY, d));
                 });
 
                 // Draw the path
@@ -5017,11 +5027,11 @@ var ThreesyLine = (function () {
                 // Create circles for each data point.
                 // Only visible if showDataPoints = true.
                 this.dataPoints = this.chart.selectAll(".threesy-data-point").data(this.data).enter().append("circle").attr("class", "threesy-data-point").attr("data-tooltip", function (d) {
-                    return (typeof _this.accessorX === "string" ? d[_this.accessorX] : _this.accessorX(d)) + ": " + (typeof _this.accessorY === "string" ? d[_this.accessorY] : _this.accessorY(d));
+                    return getValue(_this.accessorX, d) + ": " + getValue(_this.accessorY, d);
                 }).attr("data-tooltip-position", "top center").attr("r", 3.5).attr("cx", function (d) {
-                    return _this.scaleX(typeof _this.accessorX === "string" ? d[_this.accessorX] : _this.accessorX(d));
+                    return _this.scaleX(getValue(_this.accessorX, d));
                 }).attr("cy", function (d) {
-                    return _this.scaleY(typeof _this.accessorY === "string" ? d[_this.accessorY] : _this.accessorY(d));
+                    return _this.scaleY(getValue(_this.accessorY, d));
                 }).style("visibility", this.showDataPoints ? "visible" : "hidden");
 
                 return this;
@@ -5031,18 +5041,16 @@ var ThreesyLine = (function () {
             value: function update(data) {
                 var _this2 = this;
 
-                if (typeof data === "undefined" || !data.length) {
+                if ((typeof data === "undefined" ? "undefined" : _typeof(data)) === undefinedType || !data.length) {
                     throw new Error("Can't invoke update without data.");
                 }
 
                 this.data = data;
-
                 this.domainX = this.data.map(function (d) {
-                    return typeof _this2.accessorX === "string" ? d[_this2.accessorX] : _this2.accessorX(d);
+                    return getValue(_this2.accessorX, d);
                 });
-
                 this.domainY = extent(this.data, function (d) {
-                    return typeof _this2.accessorY === "string" ? d[_this2.accessorY] : _this2.accessorY(d);
+                    return getValue(_this2.accessorY, d);
                 });
 
                 this.scaleX.domain(this.domainX);
@@ -5051,31 +5059,31 @@ var ThreesyLine = (function () {
                 this.gridLineX.data(this.data.filter(function (d, i) {
                     return i > 0;
                 })).attr("x1", function (d) {
-                    return _this2.scaleX(typeof _this2.accessorX === "string" ? d[_this2.accessorX] : _this2.accessorX(d));
+                    return _this2.scaleX(getValue(_this2.accessorX, d));
                 }).attr("x2", function (d) {
-                    return _this2.scaleX(typeof _this2.accessorX === "string" ? d[_this2.accessorX] : _this2.accessorX(d));
+                    return _this2.scaleX(getValue(_this2.accessorX, d));
                 }).attr("y1", 0).attr("y2", this.height);
 
                 this.gridLineY.data(this.data.filter(function (d) {
-                    return _this2.scaleY(typeof _this2.accessorY === "string" ? d[_this2.accessorY] : _this2.accessorY(d)) < _this2.height - 1;
+                    return _this2.scaleY(getValue(_this2.accessorY, d)) < _this2.height - 1;
                 })).attr("x1", 0).attr("x1", this.width).attr("y1", function (d) {
-                    return _this2.scaleY(typeof _this2.accessorY === "string" ? d[_this2.accessorY] : _this2.accessorY(d));
+                    return _this2.scaleY(getValue(_this2.accessorY, d));
                 }).attr("y2", function (d) {
-                    return _this2.scaleY(typeof _this2.accessorY === "string" ? d[_this2.accessorY] : _this2.accessorY(d));
+                    return _this2.scaleY(getValue(_this2.accessorY, d));
                 });
 
                 this.gridLineX.exit().remove();
                 this.gridLineY.exit().remove();
 
-                select(".x.axis").call(this.axisX);
-                select(".y.axis").call(this.axisY);
+                this.axisLineX.call(this.axisX);
+                this.axisLineY.call(this.axisY);
 
                 this.path.datum(this.data).attr("d", this.line);
 
                 this.dataPoints.data(this.data).attr("cx", function (d) {
-                    return _this2.scaleX(typeof _this2.accessorX === "string" ? d[_this2.accessorX] : _this2.accessorX(d));
+                    return _this2.scaleX(getValue(_this2.accessorX, d));
                 }).attr("cy", function (d) {
-                    return _this2.scaleY(typeof _this2.accessorY === "string" ? d[_this2.accessorY] : _this2.accessorY(d));
+                    return _this2.scaleY(getValue(_this2.accessorY, d));
                 });
 
                 this.dataPoints.exit().remove();

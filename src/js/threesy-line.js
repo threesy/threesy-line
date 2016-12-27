@@ -11,17 +11,28 @@ const defaultWidth = 400;
 const defaultXAccessor = "x";
 const defaultYAccessor = "y";
 
+const uuidTemplate = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
+const uuidReplaceStr = "x";
+
+const stringType = "string";
+const undefinedType = "undefined";
+
 /*
  * http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
  */
 const uuid = () => {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
-    let r = Math.random() * 16 | 0, v = c === "x" ? r : (r & 0x3 | 0x8);
+  return uuidTemplate.replace(/[xy]/g, function(c) {
+    let r = Math.random() * 16 | 0, v = c === uuidReplaceStr ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
 };
 
+const getValue = (accessor, data) => {
+  return typeof accessor === stringType ? data[accessor] : accessor(data);
+};
+
 export default class ThreesyLine {
+
   constructor(opts = {}) {
     // Wrapper HTML element for the chart.
     if (opts.element) {
@@ -46,27 +57,25 @@ export default class ThreesyLine {
     this.domainX = opts.domainX;
     this.domainY = opts.domainY;
 
-    this.showDataPoints = typeof opts.showDataPoints === "undefined" ? true : opts.showDataPoints;
-    this.showGridLines = typeof opts.showGridLines === "undefined" ? true : opts.showGridLines;
+    this.showDataPoints = typeof opts.showDataPoints === undefinedType ? true : opts.showDataPoints;
+    this.showGridLines = typeof opts.showGridLines === undefinedType ? true : opts.showGridLines;
   }
 
   draw() {
-    if ((typeof this.element) === "undefined") {
+    if ((typeof this.element) === undefinedType) {
       throw new Error("No element selected.")
     }
 
-    if ((typeof this.data) === "undefined" || !this.data.length) {
+    if ((typeof this.data) === undefinedType || !this.data.length) {
       throw new Error("No chart data provided.");
     }
 
-    if (typeof this.domainX === "undefined") {
-      this.domainX = this.data.map((d) =>
-          typeof this.accessorX === "string" ? d[this.accessorX] : this.accessorX(d));
+    if (typeof this.domainX === undefinedType) {
+      this.domainX = this.data.map((d) => getValue(this.accessorX, d));
     }
 
-    if (typeof this.domainY === "undefined") {
-      this.domainY = extent(this.data, (d) =>
-          typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d));
+    if (typeof this.domainY === undefinedType) {
+      this.domainY = extent(this.data, (d) => getValue(this.accessorY, d));
     }
 
     // Create the x and y scales, and set the
@@ -100,37 +109,35 @@ export default class ThreesyLine {
         .data(this.data.filter((d, i) => i > 0))
         .enter().append("line")
         .attr("class", "threesy-grid-line threesy-grid-line-x")
-        .attr("x1", (d) => this.scaleX(typeof this.accessorX === "string" ? d[this.accessorX] : this.accessorX(d)))
-        .attr("x2", (d) => this.scaleX(typeof this.accessorX === "string" ? d[this.accessorX] : this.accessorX(d)))
+        .attr("x1", (d) => this.scaleX(getValue(this.accessorX, d)))
+        .attr("x2", (d) => this.scaleX(getValue(this.accessorX, d)))
         .attr("y1", 0)
         .attr("y2", this.height);
 
     this.gridLineY = this.chart.selectAll(".threesy-grid-line-y")
-        .data(this.data.filter((d) => {
-          return this.scaleY(typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)) < this.height - 1;
-        }))
+        .data(this.data.filter((d) => this.scaleY(getValue(this.accessorY, d)) < this.height - 1))
         .enter().append("line")
         .attr("class", "threesy-grid-line threesy-grid-line-y")
         .attr("x1", 0)
         .attr("x1", this.width)
-        .attr("y1", (d) => this.scaleY(typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)))
-        .attr("y2", (d) => this.scaleY(typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)));
+        .attr("y1", (d) => this.scaleY(getValue(this.accessorY, d)))
+        .attr("y2", (d) => this.scaleY(getValue(this.accessorY, d)));
 
     // Draw the x and y axes
-    this.chart.append("g")
+    this.axisLineX = this.chart.append("g")
         .attr("class", "x axis")
         .attr("transform", `translate(0, ${this.height})`)
         .call(this.axisX);
 
-    this.chart.append("g")
+    this.axisLineY = this.chart.append("g")
         .attr("class", "y axis")
         .call(this.axisY);
 
     // Create the line generator and set the
     // access functions
     this.line = line()
-        .x((d) => this.scaleX(typeof this.accessorX === "string" ? d[this.accessorX] : this.accessorX(d)))
-        .y((d) => this.scaleY(typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)));
+        .x((d) => this.scaleX(getValue(this.accessorX, d)))
+        .y((d) => this.scaleY(getValue(this.accessorY, d)));
 
     // Draw the path
     this.path = this.chart.append("g")
@@ -145,61 +152,54 @@ export default class ThreesyLine {
         .data(this.data)
         .enter().append("circle")
         .attr("class", "threesy-data-point")
-        .attr("data-tooltip", (d) =>
-            `${typeof this.accessorX === "string" ? d[this.accessorX] : this.accessorX(d)}: ${typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)}`)
+        .attr("data-tooltip", (d) => `${getValue(this.accessorX, d)}: ${getValue(this.accessorY, d)}`)
         .attr("data-tooltip-position", "top center")
         .attr("r", 3.5)
-        .attr("cx", (d) => this.scaleX(typeof this.accessorX === "string" ? d[this.accessorX] : this.accessorX(d)))
-        .attr("cy", (d) => this.scaleY(typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)))
+        .attr("cx", (d) => this.scaleX(getValue(this.accessorX, d)))
+        .attr("cy", (d) => this.scaleY(getValue(this.accessorY, d)))
         .style("visibility", this.showDataPoints ? "visible" : "hidden");
 
     return this;
   }
 
   update(data) {
-    if (typeof data === "undefined" || !data.length) {
+    if (typeof data === undefinedType || !data.length) {
       throw new Error("Can't invoke update without data.")
     }
 
     this.data = data;
-
-    this.domainX = this.data.map((d) =>
-        typeof this.accessorX === "string" ? d[this.accessorX] : this.accessorX(d));
-
-    this.domainY = extent(this.data, (d) =>
-        typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d));
+    this.domainX = this.data.map((d) => getValue(this.accessorX, d));
+    this.domainY = extent(this.data, (d) => getValue(this.accessorY, d));
 
     this.scaleX.domain(this.domainX);
     this.scaleY.domain(this.domainY);
 
     this.gridLineX
         .data(this.data.filter((d, i) => i > 0))
-        .attr("x1", (d) => this.scaleX(typeof this.accessorX === "string" ? d[this.accessorX] : this.accessorX(d)))
-        .attr("x2", (d) => this.scaleX(typeof this.accessorX === "string" ? d[this.accessorX] : this.accessorX(d)))
+        .attr("x1", (d) => this.scaleX(getValue(this.accessorX, d)))
+        .attr("x2", (d) => this.scaleX(getValue(this.accessorX, d)))
         .attr("y1", 0)
         .attr("y2", this.height);
 
     this.gridLineY
-        .data(this.data.filter((d) => {
-          return this.scaleY(typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)) < this.height - 1;
-        }))
+        .data(this.data.filter((d) => this.scaleY(getValue(this.accessorY, d)) < this.height - 1))
         .attr("x1", 0)
         .attr("x1", this.width)
-        .attr("y1", (d) => this.scaleY(typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)))
-        .attr("y2", (d) => this.scaleY(typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)));
+        .attr("y1", (d) => this.scaleY(getValue(this.accessorY, d)))
+        .attr("y2", (d) => this.scaleY(getValue(this.accessorY, d)));
 
     this.gridLineX.exit().remove();
     this.gridLineY.exit().remove();
 
-    select(".x.axis").call(this.axisX);
-    select(".y.axis").call(this.axisY);
+    this.axisLineX.call(this.axisX);
+    this.axisLineY.call(this.axisY);
 
     this.path.datum(this.data)
         .attr("d", this.line);
 
     this.dataPoints.data(this.data)
-        .attr("cx", (d) => this.scaleX(typeof this.accessorX === "string" ? d[this.accessorX] : this.accessorX(d)))
-        .attr("cy", (d) => this.scaleY(typeof this.accessorY === "string" ? d[this.accessorY] : this.accessorY(d)));
+        .attr("cx", (d) => this.scaleX(getValue(this.accessorX, d)))
+        .attr("cy", (d) => this.scaleY(getValue(this.accessorY, d)));
 
     this.dataPoints.exit().remove();
   }
